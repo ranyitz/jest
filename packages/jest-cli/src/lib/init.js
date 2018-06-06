@@ -4,8 +4,6 @@ import {defaults} from 'jest-config';
 import path from 'path';
 import prompts from 'prompts';
 
-import {SOFT_CLEAR} from '../constants';
-
 const generateConfigFile = overrides => {
   let result =
     '// For a detailed explanation regarding each configuration property, please visit:\n' +
@@ -64,9 +62,6 @@ const questions = [
 ];
 
 module.exports = async () => {
-  // Do not clear console on tests
-  process.env.NODE_ENV !== 'test' && process.stdout.write(SOFT_CLEAR);
-
   console.log(
     `We will ask you a few questions that will help us 
 create a suitable configuration for your project\n`,
