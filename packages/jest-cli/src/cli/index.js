@@ -32,10 +32,16 @@ import pluralize from '../pluralize';
 import yargs from 'yargs';
 import rimraf from 'rimraf';
 import {sync as realpath} from 'realpath-native';
+import init from '../lib/init';
 
 export async function run(maybeArgv?: Argv, project?: Path) {
   try {
     const argv: Argv = buildArgv(maybeArgv, project);
+
+    if (argv.init) {
+      return init();
+    }
+
     const projects = getProjectListFromCLIArgs(argv, project);
 
     const {results, globalConfig} = await runCLI(argv, projects);
