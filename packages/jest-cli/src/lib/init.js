@@ -19,12 +19,12 @@ const generateConfigFile = overrides => {
 
   for (const option in defaults) {
     if (overrideKeys.includes(option)) {
-      result += printOption(option, overrides) + ',\n';
+      result += '  ' + printOption(option, overrides) + ',\n';
     } else {
       result +=
         printOption(option, defaults)
           .split('\n')
-          .map(line => '// ' + line)
+          .map(line => '  // ' + line)
           .join('\n') + ',\n';
     }
   }
