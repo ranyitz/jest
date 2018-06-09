@@ -1,8 +1,17 @@
+/**
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @flow
+ */
+ 
 const questions = [
   {
     initial: true,
     message:
-      'Would you like to use jest when running "test" script in `package.json`?',
+      'Would you like to use Jest when running "test" script in "package.json"?',
     name: 'scripts',
     type: 'confirm',
   },
@@ -18,13 +27,7 @@ const questions = [
   },
   {
     initial: false,
-    message: 'Is this a Typescript project?',
-    name: 'typescript',
-    type: 'confirm',
-  },
-  {
-    initial: false,
-    message: 'Do you want jest to add coverage reports?',
+    message: 'Do you want Jest to add coverage reports?',
     name: 'coverage',
     type: 'confirm',
   },
@@ -37,3 +40,10 @@ const questions = [
 ];
 
 export default questions;
+
+export const typescriptQuestion = {
+  initial: true,
+  message: 'Typescript detected, would you like to setup Jest for Typescript?',
+  name: 'typescript',
+  type: 'confirm',
+};

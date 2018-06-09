@@ -1,10 +1,21 @@
+/**
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @flow
+ */
+
 import {defaults} from 'jest-config';
 
-const generateConfigFile = results => {
+const generateConfigFile = (results: {[string]: boolean}) => {
   const {typescript, coverage, clearMocks, environment} = results;
 
-  const overrides = Object.assign(
-    typescript && {
+  const overrides = {};
+
+  if (typescript) {
+    Object.assign(overrides, {
       globals: {
         'ts-jest': {
           tsConfigFile: 'tsconfig.json',
@@ -15,17 +26,27 @@ const generateConfigFile = results => {
       transform: {
         '^.+\\.(ts|tsx)$': 'ts-jest',
       },
-    },
-    coverage && {
+    });
+  }
+
+  if (coverage) {
+    Object.assign(overrides, {
       coverageDirectory: 'coverage',
-    },
-    environment === 'node' && {
+    });
+  }
+
+  if (environment === 'node') {
+    Object.assign(overrides, {
       testEnvironment: 'node',
-    },
-    clearMocks && {
+    });
+  }
+
+  if (clearMocks) {
+    Object.assign(overrides, {
       clearMocks: true,
-    },
-  );
+    });
+  }
+
   let result =
     '// For a detailed explanation regarding each configuration property, please visit:\n' +
     '// https://facebook.github.io/jest/docs/en/configuration.html\n\n' +
@@ -33,22 +54,27 @@ const generateConfigFile = results => {
 
   const overrideKeys = Object.keys(overrides);
 
-  const printOption = (option, map) =>
-    option + ': ' + JSON.stringify(map[option], null, 2);
+  const printOption = (
+    option: string,
+    map: Object,
+    linePrefix: string = '',
+  ) => {
+    const stringifiedObject =
+      option + ': ' + JSON.stringify(map[option], null, 2);
+
+    return (
+      stringifiedObject
+        .split('\n')
+        .map(line => '  ' + linePrefix + line)
+        .join('\n') + ',\n'
+    );
+  };
 
   for (const option in defaults) {
     if (overrideKeys.includes(option)) {
-      result +=
-        printOption(option, overrides)
-          .split('\n')
-          .map(line => '  ' + line)
-          .join('\n') + ',\n';
+      result += printOption(option, overrides);
     } else {
-      result +=
-        printOption(option, defaults)
-          .split('\n')
-          .map(line => '  // ' + line)
-          .join('\n') + ',\n';
+      result += printOption(option, defaults, '// ');
     }
   }
 
