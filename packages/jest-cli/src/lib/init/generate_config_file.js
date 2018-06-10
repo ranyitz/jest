@@ -7,7 +7,7 @@
  * @flow
  */
 
-import {defaults} from 'jest-config';
+import {defaults, options} from 'jest-config';
 
 const generateConfigFile = (results: {[string]: boolean}) => {
   const {typescript, coverage, clearMocks, environment} = results;
@@ -47,11 +47,6 @@ const generateConfigFile = (results: {[string]: boolean}) => {
     });
   }
 
-  let result =
-    '// For a detailed explanation regarding each configuration property, please visit:\n' +
-    '// https://facebook.github.io/jest/docs/en/configuration.html\n\n' +
-    'module.exports = {\n';
-
   const overrideKeys = Object.keys(overrides);
 
   const printOption = (
@@ -59,26 +54,41 @@ const generateConfigFile = (results: {[string]: boolean}) => {
     map: Object,
     linePrefix: string = '',
   ) => {
-    const stringifiedObject =
-      option + ': ' + JSON.stringify(map[option], null, 2);
+    const optionDescription = `  // ${options[option]}`;
+    const stringifiedObject = `${option}: ${JSON.stringify(
+      map[option],
+      null,
+      2,
+    )}`;
 
     return (
+      optionDescription +
+      '\n' +
       stringifiedObject
         .split('\n')
         .map(line => '  ' + linePrefix + line)
-        .join('\n') + ',\n'
+        .join('\n') +
+      ',\n'
     );
   };
 
-  for (const option in defaults) {
+  const properties = [];
+
+  for (const option in options) {
     if (overrideKeys.includes(option)) {
-      result += printOption(option, overrides);
+      properties.push(printOption(option, overrides));
     } else {
-      result += printOption(option, defaults, '// ');
+      properties.push(printOption(option, defaults, '// '));
     }
   }
 
-  return result + '};\n';
+  return (
+    '// For a detailed explanation regarding each configuration property, visit:\n' +
+    '// https://facebook.github.io/jest/docs/en/configuration.html\n\n' +
+    'module.exports = {\n' +
+    properties.join('\n') +
+    '};\n'
+  );
 };
 
 export default generateConfigFile;

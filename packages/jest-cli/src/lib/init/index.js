@@ -74,15 +74,16 @@ export default async () => {
     projectPackageJson.devDependencies,
   );
 
-  console.log(questions);
-  console.log(typescriptQuestion);
   if (Object.keys(deps).includes('typescript')) {
     questions.unshift(typescriptQuestion);
   }
 
   // Start the init process
+  console.log();
   console.log(
-    `The following questions will help us create a suitable configuration for your project\n`,
+    chalk.underline(
+      `The following questions will help us create a suitable configuration for your project\n`,
+    ),
   );
 
   let promptAborted = false;
@@ -110,7 +111,7 @@ export default async () => {
 
     fs.writeFileSync(projectPackageJsonPath, modifiedPackageJson);
     console.log('');
-    console.log(`${chalk.cyan(projectPackageJsonPath)} updated`);
+    console.log(`✏️  Modified ${chalk.cyan(projectPackageJsonPath)}`);
   }
 
   const generatedConfig = generateConfigFile(results);
@@ -118,6 +119,6 @@ export default async () => {
 
   console.log('');
   console.log(
-    `📝  configuration file created at ${chalk.cyan(jestConfigPath)}`,
+    `📝  Configuration file created at ${chalk.cyan(jestConfigPath)}`,
   );
 };
