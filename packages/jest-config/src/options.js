@@ -21,9 +21,9 @@ export default ({
   coverageDirectory:
     'The directory where Jest should output its coverage files',
   coveragePathIgnorePatterns:
-    'An array of regexp pattern strings that are matched against all file paths before executing the test. If the file path matches any of the patterns, coverage information will be skipped',
+    'An array of regexp pattern strings used to skip coverage collection',
   coverageReporters:
-    'A list of reporter names that Jest uses when writing coverage reports. Any istanbul reporter can be used',
+    'A list of reporter names that Jest uses when writing coverage reports',
   coverageThreshold:
     'An object that configures minimum threshold enforcement for coverage results',
   errorOnDeprecated:
@@ -31,18 +31,18 @@ export default ({
   forceCoverageMatch:
     'Force coverage collection from ignored files usin a array of glob patterns',
   globalSetup:
-    'A path to a custom global setup module which exports an async function that is triggered once before all test suites',
+    'A path to a module which exports an async function that is triggered once before all test suites',
   globalTeardown:
-    'A path to a custom global teardown module which exports an async function that is triggered once after all test suites',
+    'A path to a module which exports an async function that is triggered once after all test suites',
   globals:
     'A set of global variables that need to be available in all test environments',
   moduleDirectories:
     "An array of directory names to be searched recursively up from the requiring module's location",
   moduleFileExtensions: 'An array of file extensions your modules use',
   moduleNameMapper:
-    'A map from regular expressions to module names that allow to stub out resources, like images or styles with a single module',
+    'A map from regular expressions to module names that allow to stub out resources with a single module',
   modulePathIgnorePatterns:
-    "An array of regexp pattern strings that are matched against all module paths before those paths are to be considered 'visible' to the module loader",
+    "An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader",
   notify: 'Activates notifications for test results',
   notifyMode:
     'An enum that specifies notification mode. Requires { notify: true }',
@@ -70,7 +70,7 @@ export default ({
   testLocationInResults: 'Adds a location field to test results',
   testMatch: 'The glob patterns Jest uses to detect test files',
   testPathIgnorePatterns:
-    'An array of regexp pattern strings that are matched against all test paths before executing the test. If the test path matches any of the patterns, it will be skipped',
+    'An array of regexp pattern strings that are matched against all test paths, matched tests are skipped',
   testRegex: 'The regexp pattern Jest uses to detect test files',
   testResultsProcessor:
     'This option allows the use of a custom results processor',
@@ -79,11 +79,11 @@ export default ({
     'This option sets the URL for the jsdom environment. It is reflected in properties such as location.href',
   timers:
     'Setting this value to "fake" allows the use of fake timers for functions such as "setTimeout"',
-  transform:
-    'A map from regular expressions to paths to transformers. A transformer is a module that provides a synchronous function for transforming source files',
+  transform: 'A map from regular expressions to paths to transformers',
   transformIgnorePatterns:
-    'An array of regexp pattern strings that are matched against all source file paths before transformation. If the test path matches any of the patterns, it will not be transformed',
-  unmockedModulePathPatterns: '',
+    'An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation',
+  unmockedModulePathPatterns:
+    'An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them',
   verbose:
     'Indicates whether each individual test should be reported during the run',
   watchPathIgnorePatterns:
