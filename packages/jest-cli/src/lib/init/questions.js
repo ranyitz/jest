@@ -6,8 +6,16 @@
  *
  * @flow
  */
- 
-const questions = [
+
+type Question = {
+  intial?: boolean | number,
+  message: string,
+  name: string,
+  type: string,
+  choices?: Array<{title: string, value: string}>,
+};
+
+const questions: Array<Question> = [
   {
     initial: true,
     message:
@@ -17,8 +25,8 @@ const questions = [
   },
   {
     choices: [
-      {title: 'jsdom (browser-like)', value: 'jsdom'},
       {title: 'node', value: 'node'},
+      {title: 'jsdom (browser-like)', value: 'jsdom'},
     ],
     initial: 0,
     message: 'Choose the test environment that will be used for testing',
@@ -41,7 +49,7 @@ const questions = [
 
 export default questions;
 
-export const typescriptQuestion = {
+export const typescriptQuestion: Question = {
   initial: true,
   message: 'Typescript detected, would you like to setup Jest for Typescript?',
   name: 'typescript',

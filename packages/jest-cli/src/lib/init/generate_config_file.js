@@ -9,10 +9,10 @@
 
 import {defaults, options} from 'jest-config';
 
-const generateConfigFile = (results: {[string]: boolean}) => {
+const generateConfigFile = (results: {[string]: boolean}): string => {
   const {typescript, coverage, clearMocks, environment} = results;
 
-  const overrides = {};
+  const overrides: Object = {};
 
   if (typescript) {
     Object.assign(overrides, {
@@ -47,13 +47,13 @@ const generateConfigFile = (results: {[string]: boolean}) => {
     });
   }
 
-  const overrideKeys = Object.keys(overrides);
+  const overrideKeys: Array<string> = Object.keys(overrides);
 
-  const printOption = (
+  const stringifyOption = (
     option: string,
     map: Object,
     linePrefix: string = '',
-  ) => {
+  ): string => {
     const optionDescription = `  // ${options[option]}`;
     const stringifiedObject = `${option}: ${JSON.stringify(
       map[option],
@@ -72,13 +72,13 @@ const generateConfigFile = (results: {[string]: boolean}) => {
     );
   };
 
-  const properties = [];
+  const properties: Array<string> = [];
 
   for (const option in options) {
     if (overrideKeys.includes(option)) {
-      properties.push(printOption(option, overrides));
+      properties.push(stringifyOption(option, overrides));
     } else {
-      properties.push(printOption(option, defaults, '// '));
+      properties.push(stringifyOption(option, defaults, '// '));
     }
   }
 

@@ -39,7 +39,8 @@ export async function run(maybeArgv?: Argv, project?: Path) {
     const argv: Argv = buildArgv(maybeArgv, project);
 
     if (argv.init) {
-      return init();
+      await init();
+      return;
     }
 
     const projects = getProjectListFromCLIArgs(argv, project);

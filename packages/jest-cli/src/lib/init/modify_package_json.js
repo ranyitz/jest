@@ -7,13 +7,23 @@
  * @flow
  */
 
-const updatePackageJson = (
+const modifyPackageJson = ({
+  projectPackageJson,
+  shouldModifyScripts,
+  hasJestProperty,
+}: {
   projectPackageJson: Object,
   shouldModifyScripts: boolean,
-  hasJestProperty: boolean,
-) => {
-  // TODO: actually modify the package.json
+}): string => {
+  if (shouldModifyScripts) {
+    projectPackageJson.scripts
+      ? (projectPackageJson.scripts.test = 'jest')
+      : (projectPackageJson.scripts = {test: 'jest'});
+  }
+
+  delete projectPackageJson.jest;
+
   return JSON.stringify(projectPackageJson, null, 2) + '\n';
 };
 
-export default updatePackageJson;
+export default modifyPackageJson;

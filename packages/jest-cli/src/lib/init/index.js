@@ -16,20 +16,29 @@ import {PACKAGE_JSON, JEST_CONFIG} from '../../constants';
 import generateConfigFile from './generate_config_file';
 import modifyPackageJson from './modify_package_json';
 
-export default async () => {
+type PromptsResults = {
+  clearMocks: boolean,
+  coverage: boolean,
+  environment: boolean,
+  scripts: boolean,
+  typescript: boolean,
+};
+
+export default async (rootDir: string = process.cwd()) => {
   // prerequisite checks
-  const projectPackageJsonPath = path.join(process.cwd(), PACKAGE_JSON);
-  const jestConfigPath = path.join(process.cwd(), JEST_CONFIG);
+  const projectPackageJsonPath: string = path.join(rootDir, PACKAGE_JSON);
+  const jestConfigPath: string = path.join(rootDir, JEST_CONFIG);
 
   if (!fs.existsSync(projectPackageJsonPath)) {
-    console.log();
-    console.log('Could not find a valid package.json, aborting'); // TODO: refactor
-    return;
+    throw new Error(
+      `Could not find a "package.json" file in "${rootDir}", ` +
+        'use "jest --init" from the project root',
+    );
   }
 
-  let hasJestProperty = false;
-  let hasJestConfig = false;
-  let projectPackageJson;
+  let hasJestProperty: boolean = false;
+  let hasJestConfig: boolean = false;
+  let projectPackageJson: ?Object;
 
   try {
     projectPackageJson = JSON.parse(
@@ -50,7 +59,7 @@ export default async () => {
   }
 
   if (hasJestProperty || hasJestConfig) {
-    const result = await prompts({
+    const result: {continue: boolean} = await prompts({
       initial: true,
       message:
         'It seems that you already have a jest configuration, do you want to override it?',
@@ -66,7 +75,7 @@ export default async () => {
   }
 
   // Try to detect typescript and add a question if needed
-  const deps = {};
+  const deps: Object = {};
 
   Object.assign(
     deps,
@@ -86,9 +95,9 @@ export default async () => {
     ),
   );
 
-  let promptAborted = false;
+  let promptAborted: boolean = false;
 
-  const results = await prompts(questions, {
+  const results: PromptsResults = await prompts(questions, {
     onCancel: () => {
       promptAborted = true;
     },
@@ -103,11 +112,10 @@ export default async () => {
   const shouldModifyScripts = results.scripts;
 
   if (shouldModifyScripts || hasJestProperty) {
-    const modifiedPackageJson = modifyPackageJson(
+    const modifiedPackageJson = modifyPackageJson({
       projectPackageJson,
       shouldModifyScripts,
-      hasJestProperty,
-    );
+    });
 
     fs.writeFileSync(projectPackageJsonPath, modifiedPackageJson);
     console.log('');
