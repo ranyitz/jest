@@ -12,6 +12,7 @@ import fs from 'fs';
 import path from 'path';
 import prompts from 'prompts';
 import questions, {typescriptQuestion} from './questions';
+import {NotFoundPackageJsonError, MalformedPackageJsonError} from './errors';
 import {PACKAGE_JSON, JEST_CONFIG} from '../../constants';
 import generateConfigFile from './generate_config_file';
 import modifyPackageJson from './modify_package_json';
@@ -30,10 +31,7 @@ export default async (rootDir: string = process.cwd()) => {
   const jestConfigPath: string = path.join(rootDir, JEST_CONFIG);
 
   if (!fs.existsSync(projectPackageJsonPath)) {
-    throw new Error(
-      `Could not find a "package.json" file in "${rootDir}", ` +
-        'use "jest --init" from the project root',
-    );
+    throw new NotFoundPackageJsonError(rootDir);
   }
 
   let hasJestProperty: boolean = false;
@@ -45,9 +43,7 @@ export default async (rootDir: string = process.cwd()) => {
       fs.readFileSync(projectPackageJsonPath, 'utf-8'),
     );
   } catch (error) {
-    console.error(`There is malformed json in ${projectPackageJsonPath}`);
-    console.error(`Please fix it and than run "jest --init"`);
-    return;
+    throw new MalformedPackageJsonError(projectPackageJsonPath);
   }
 
   if (projectPackageJson.jest) {
@@ -118,11 +114,13 @@ export default async (rootDir: string = process.cwd()) => {
     });
 
     fs.writeFileSync(projectPackageJsonPath, modifiedPackageJson);
+
     console.log('');
     console.log(`✏️  Modified ${chalk.cyan(projectPackageJsonPath)}`);
   }
 
   const generatedConfig = generateConfigFile(results);
+
   fs.writeFileSync(jestConfigPath, generatedConfig);
 
   console.log('');

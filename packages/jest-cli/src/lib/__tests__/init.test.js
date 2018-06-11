@@ -7,6 +7,7 @@
  * @flow
  */
 
+/* eslint-disable no-eval */
 import fs from 'fs';
 import path from 'path';
 import prompts from 'prompts';
@@ -42,9 +43,9 @@ describe('init', () => {
         await init(resolveFromFixture('only_package_json'));
 
         const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
+
         expect(writtenJestConfig).toMatchSnapshot();
 
-        // eslint-disable-next-line no-eval
         const evaluatedConfig = eval(writtenJestConfig);
 
         expect(evaluatedConfig).toEqual({});
@@ -58,8 +59,6 @@ describe('init', () => {
         await init(resolveFromFixture('only_package_json'));
 
         const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
-
-        // eslint-disable-next-line no-eval
         const evaluatedConfig = eval(writtenJestConfig);
 
         expect(evaluatedConfig).toEqual({clearMocks: true});
@@ -71,9 +70,8 @@ describe('init', () => {
         await init(resolveFromFixture('only_package_json'));
 
         const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
-
-        // eslint-disable-next-line no-eval
         const evaluatedConfig = eval(writtenJestConfig);
+
         expect(evaluatedConfig).toEqual({coverageDirectory: 'coverage'});
       });
 
@@ -83,8 +81,6 @@ describe('init', () => {
         await init(resolveFromFixture('only_package_json'));
 
         const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
-
-        // eslint-disable-next-line no-eval
         const evaluatedConfig = eval(writtenJestConfig);
         // should modify when the default environment will be changed to "node"
         expect(evaluatedConfig).toEqual({});
@@ -96,8 +92,6 @@ describe('init', () => {
         await init(resolveFromFixture('only_package_json'));
 
         const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
-
-        // eslint-disable-next-line no-eval
         const evaluatedConfig = eval(writtenJestConfig);
         // should modify when the default environment will be changed to "node"
         expect(evaluatedConfig).toEqual({testEnvironment: 'node'});
@@ -109,6 +103,7 @@ describe('init', () => {
         await init(resolveFromFixture('only_package_json'));
 
         const writtenPackageJson = fs.writeFileSync.mock.calls[0][1];
+
         expect(writtenPackageJson).toMatchSnapshot();
         expect(JSON.parse(writtenPackageJson).scripts.test).toEqual('jest');
       });
@@ -129,6 +124,18 @@ describe('init', () => {
     });
   });
 
+  describe('malformed package json', () => {
+    it('should throw an error if there is malformed package.json file', async () => {
+      expect.assertions(1);
+
+      try {
+        await init(resolveFromFixture('malformed_package_json'));
+      } catch (error) {
+        expect(error.message).toMatch('There is malformed json in');
+      }
+    });
+  });
+
   describe('has-jest-config-file', () => {
     describe('ask the user whether to override config or not', () => {
       it('user answered with "Yes"', async () => {
@@ -139,6 +146,7 @@ describe('init', () => {
         expect(prompts.mock.calls[0][0]).toMatchSnapshot();
 
         const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
+
         expect(writtenJestConfig).toBeDefined();
       });
 
@@ -161,6 +169,7 @@ describe('init', () => {
       expect(prompts.mock.calls[0][0]).toMatchSnapshot();
 
       const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
+
       expect(writtenJestConfig).toBeDefined();
     });
   });
@@ -172,6 +181,7 @@ describe('init', () => {
       await init(resolveFromFixture('typescript_in_dependencies'));
 
       const typescriptQuestion = prompts.mock.calls[0][0][0];
+
       expect(typescriptQuestion).toMatchSnapshot();
     });
 
@@ -181,6 +191,7 @@ describe('init', () => {
       await init(resolveFromFixture('typescript_in_dev_dependencies'));
 
       const typescriptQuestion = prompts.mock.calls[0][0][0];
+
       expect(typescriptQuestion).toMatchSnapshot();
     });
 
@@ -190,9 +201,8 @@ describe('init', () => {
       await init(resolveFromFixture('typescript_in_dev_dependencies'));
 
       const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
-
-      // eslint-disable-next-line no-eval
       const evaluatedConfig = eval(writtenJestConfig);
+
       expect(evaluatedConfig).toMatchSnapshot();
     });
   });
